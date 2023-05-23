@@ -1,4 +1,4 @@
-export const ButtonNew = ({
+export const Button = ({
   label,
   onClick,
   variant,
