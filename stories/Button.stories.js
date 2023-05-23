@@ -38,3 +38,10 @@ export const FullWidth = {
     fullWidth: true,
   },
 };
+
+export const Loading = {
+  args: {
+    isLoading: true,
+    fullWidth: true,
+  },
+};
