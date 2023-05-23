@@ -4,12 +4,19 @@ import { Button } from "../components/Button";
 export default {
   title: "Example/Button",
   component: Button,
+  // setting default value for props/args
+  args: {
+    label: "Building with SDN",
+    variant: "primary",
+    isLoading: false,
+    fullWidth: false,
+    small: false,
+    disabled: false,
+  },
 };
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-export const Primary = {
-  args: {},
-};
+export const Primary = {};
 
 export const Secondary = {
   args: {

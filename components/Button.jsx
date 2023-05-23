@@ -1,13 +1,13 @@
 import ClipLoader from "react-spinners/ClipLoader";
 
 export const Button = ({
-  label = "Building with SDN",
+  label,
   onClick,
-  variant = "primary",
-  isLoading = false,
-  fullWidth = false,
-  small = false,
-  disabled = false,
+  variant,
+  isLoading,
+  fullWidth,
+  small,
+  disabled,
 }) => {
   const variantClasses = `${
     variant === "secondary"
