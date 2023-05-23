@@ -1,11 +1,11 @@
 export const Button = ({
-  label,
+  label = "Building with SDN",
   onClick,
-  variant,
+  variant = "primary",
   loading,
-  fullWidth,
-  small,
-  disabled,
+  fullWidth = false,
+  small = false,
+  disabled = false,
 }) => {
   const variantClasses = `${
     variant === "secondary"
