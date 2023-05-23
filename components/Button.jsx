@@ -1,8 +1,10 @@
+import ClipLoader from "react-spinners/ClipLoader";
+
 export const Button = ({
   label = "Building with SDN",
   onClick,
   variant = "primary",
-  loading,
+  isLoading = false,
   fullWidth = false,
   small = false,
   disabled = false,
@@ -17,10 +19,10 @@ export const Button = ({
 
   return (
     <button
-      className={`rounded text-white disabled:bg-gray-600 ${variantClasses} ${fullWidthClasses} ${smallClasses}`}
+      className={`flex items-center justify-center rounded text-white disabled:bg-gray-600 ${variantClasses} ${fullWidthClasses} ${smallClasses}`}
       onClick={onClick}
       disabled={disabled}>
-      {label}
+      {isLoading ? <ClipLoader color="#fff" /> : label}
     </button>
   );
 };
