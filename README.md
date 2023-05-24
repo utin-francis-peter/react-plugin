@@ -1,6 +1,6 @@
 # react-plugin
 
-[https://react-plugin.vercel.app/](Live Link)
+[Live link](https://react-plugin.vercel.app/)
 
 # WEEK2 THEORY TASKS
 
