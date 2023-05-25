@@ -4,7 +4,8 @@ export default {
   title: "Example/Link",
   component: Link,
   args: {
-    label: "upload",
+    label: "visit",
+    navPath: "https://github.com/utin-francis-peter/react-plugin",
     isHovered: false,
     isVisited: false,
     isActive: false,
@@ -17,7 +18,7 @@ export const Standalone = {
   args: {
     variant: "standalone",
     hasIcon: true,
-    icon: "upload",
+    icon: "arrow-up-right-from-square",
   },
 };
 
