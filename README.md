@@ -43,3 +43,19 @@ return <button> ... </button>
 ```
 
 In conclusion, getting missing expected prop errors during run-time isn't the best as such errors can be received during development if it were to be a typescript project with compulsory prop interfaces.
+
+### Single Transaction Bridge Flow
+
+1. User selects sending and destination chain.
+2. Check tokens that can be bridged based on step1.
+3. Populate the `from-token-list` and `to-token-list` components with supported tokens for bridging.
+4. User selects token to be sent and received.
+5. Fetch and display available routes between selected chains using the `quote` endpoint.
+6. User selects a route.
+7. Check if selected token is an ERC-20 token.
+8. Request allowance of spending sending token from user using the `check-allowance` endpoint.
+9. If selected token isn't ERC-20, skip step7 and continue.
+10. Fetch the `callData` for the route from `/server/build-tx` endpoint to get transaction data.
+11. Initiate a contract call to send `callData` to Socket contracts.
+12. Socket contract bridges and swaps.
+13. Track transaction status using Socket Bridge Status APIs.
