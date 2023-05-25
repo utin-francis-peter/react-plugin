@@ -19,7 +19,9 @@ export const Button = ({
 
   return (
     <button
-      className={`flex items-center justify-center rounded text-white disabled:bg-gray-600 ${variantClasses} ${fullWidthClasses} ${smallClasses}`}
+      className={`flex items-center justify-center rounded text-white disabled:cursor-not-allowed disabled:bg-gray-600 ${variantClasses} ${fullWidthClasses} ${smallClasses} ${
+        isLoading ? "cursor-wait" : ""
+      }`}
       onClick={onClick}
       disabled={disabled}>
       {isLoading ? <ClipLoader color="#fff" /> : label}
