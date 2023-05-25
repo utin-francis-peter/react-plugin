@@ -7,6 +7,7 @@ export const Link = ({
   isVisited,
   isActive,
   isDisabled,
+  navPath,
 }) => {
   return (
     <a
@@ -22,9 +23,10 @@ export const Link = ({
           : isDisabled
           ? "text-gray-200"
           : ""
-      }`}>
+      }`}
+      href={navPath}>
       {label}
-      {hasIcon && <i className={`fa-solid fa-${icon}`}></i>}
+      {hasIcon && <i className={`fa-solid fa-${icon} text-xs`}></i>}
     </a>
   );
 };
