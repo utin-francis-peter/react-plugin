@@ -42,7 +42,7 @@ export const Component = ({prop1 = "hello1", prop2 = "hello2"}) => {
 return <button> ... </button>
 ```
 
-In conclusion, getting missing expected prop errors during run-time isn't the best as such errors can be received during development if it were to be a typescript project with compulsory prop interfaces.
+In conclusion, getting missing prop errors during run-time isn't the best as such errors can be received during development if it were a typescript project with compulsory prop interfaces.
 
 ### Single Transaction Bridge Flow
 
