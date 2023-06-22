@@ -5,13 +5,13 @@ export default {
   component: NetworkDropdown,
 };
 
-export const from = {
+export const fromNetwork = {
   args: {
     variant: "from",
   },
 };
 
-export const to = {
+export const toNetwork = {
   args: {
     variant: "to",
   },
