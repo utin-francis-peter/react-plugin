@@ -1,85 +1,73 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { data } from "../data/data";
+import { useEffect } from "react";
 
 const NetworkDropdown = ({ variant }) => {
-  const [activeChain, setActiveChain] = useState();
-  const [showChains, setShowChains] = useState(false);
+  // active network
+  const [activeNetwork, setActiveNetwork] = useState();
+  // help us render section component conditionally
+  const [showNetworks, setShowNetworks] = useState(false);
 
-  const handleActiveNetwork = (id) => {
-    setActiveChain(() => data.find((d) => d.chainId === id));
+  const handleActiveNetwork = (chainID) => {
+    // update active network
+    setActiveNetwork(() => data.find((d) => d.chainId === chainID));
+    // toggle showNetworks state
+    setShowNetworks(!showNetworks);
   };
 
   useEffect(() => {
+    //   if variant is FROM, set active network as Ethereum
+
+    // else if variant is TO, set active network to Polygon
+
     if (variant === "from") {
-      setActiveChain(() =>
+      setActiveNetwork(() =>
         data.find((d) => d.name.toLowerCase() === "ethereum")
       );
     } else if (variant === "to") {
-      setActiveChain(() =>
+      setActiveNetwork(() =>
         data.find((d) => d.name.toLowerCase() === "polygon")
       );
     }
   }, []);
+  console.log(activeNetwork);
 
-  //TODO: WHY DIDN'T DOMContentLoaded EVENT FIRE????
-  //   useEffect(() => {
-  //     window.addEventListener("DOMContentLoaded", () => {
-  //       //   set active network to eth if variant is FROM, and polygon if variant is TO
-  //       console.log("TOP GUY");
-  //       switch (variant) {
-  //         case "from":
-  //           console.log("from block");
-  //           setActiveChain(() =>
-  //             data.find((d) => d.name.toLowerCase() === "ethereum")
-  //           );
-  //           break;
-  //
-  //         default:
-  //           console.log("to block");
-  //           setActiveChain(() =>
-  //             data.find((d) => d.name.toLowerCase() === "polygon")
-  //           );
-  //           break;
-  //       }
-  //     });
-  //   }, []);
   return (
-    <div className="w-1/5">
+    <div>
+      {/* active network is rendered in button */}
       <button
-        className="block flex w-full items-center justify-between  gap-3 border border-red-300 px-1"
-        onClick={() => setShowChains(!showChains)}>
-        <span className="flex items-center justify-between gap-2">
+        className="flex w-1/5 items-center justify-between border border-red-300 px-2"
+        onClick={() => setShowNetworks(!showNetworks)}>
+        <span className="flex items-center gap-2">
           <img
             className="rounded-full"
-            src={activeChain?.icon}
-            alt={`${activeChain?.icon} logo`}
+            src={activeNetwork?.icon}
+            alt={`${activeNetwork?.name} logo`}
             width={20}
           />
-          {activeChain?.name}
+          {activeNetwork?.name}
         </span>
-        <i className={`fa-solid fa-chevron-${!showChains ? "down" : "up"}`}></i>
+        <i
+          className={`fa-solid fa-chevron-${showNetworks ? "up" : "down"}`}></i>
       </button>
 
-      {/* all networks dropdown */}
-      {showChains && (
-        <section className="inline-block bg-gray-500 p-2">
+      {/* all networks are rendered here */}
+      {showNetworks && (
+        <section>
           {data
-            .filter((d) => d.chainId !== activeChain.chainId)
+            .filter((d) => d.chainId !== activeNetwork.chainId)
             .map((d, i) => (
               <button
-                className="block flex w-full items-center gap-3 hover:bg-gray-100"
+                onClick={() => handleActiveNetwork(d.chainId)}
                 key={i}
-                onClick={() => {
-                  setShowChains(!showChains);
-                  handleActiveNetwork(d.chainId);
-                }}>
+                className="flex w-1/5 items-center justify-between border border-red-300 px-2">
                 <img
                   className="rounded-full"
-                  src={d.icon}
-                  alt={`${d.icon} logo`}
+                  src={d?.icon}
+                  alt={`${d?.name} logo`}
                   width={20}
                 />
-                {d.name}
+                {d?.name}
               </button>
             ))}
         </section>
