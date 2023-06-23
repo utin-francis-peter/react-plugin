@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { data } from "../data/data";
+import { chains } from "../data/data";
 
 const NetworkDropdown = ({ variant }) => {
   const [activeChain, setActiveChain] = useState();
   const [showChains, setShowChains] = useState(false);
 
   const handleActiveNetwork = (id) => {
-    setActiveChain(() => data.find((d) => d.chainId === id));
+    setActiveChain(() => chains.find((d) => d.chainId === id));
   };
 
   useEffect(() => {
     if (variant === "from") {
       setActiveChain(() =>
-        data.find((d) => d.name.toLowerCase() === "ethereum")
+        chains.find((d) => d.name.toLowerCase() === "ethereum")
       );
     } else if (variant === "to") {
       setActiveChain(() =>
-        data.find((d) => d.name.toLowerCase() === "polygon")
+        chains.find((d) => d.name.toLowerCase() === "polygon")
       );
     }
   }, []);
@@ -30,14 +30,14 @@ const NetworkDropdown = ({ variant }) => {
   //         case "from":
   //           console.log("from block");
   //           setActiveChain(() =>
-  //             data.find((d) => d.name.toLowerCase() === "ethereum")
+  //             chains.find((d) => d.name.toLowerCase() === "ethereum")
   //           );
   //           break;
   //
   //         default:
   //           console.log("to block");
   //           setActiveChain(() =>
-  //             data.find((d) => d.name.toLowerCase() === "polygon")
+  //             chains.find((d) => d.name.toLowerCase() === "polygon")
   //           );
   //           break;
   //       }
@@ -63,7 +63,7 @@ const NetworkDropdown = ({ variant }) => {
       {/* all networks dropdown */}
       {showChains && (
         <section className="inline-block bg-gray-500 p-2">
-          {data
+          {chains
             .filter((d) => d.chainId !== activeChain.chainId)
             .map((d, i) => (
               <button
