@@ -1,7 +1,7 @@
 import NetworkDropdown from "../components/NetworkDropdown";
 
 export default {
-  title: "Bungee/Components",
+  title: "Bungee/NetworkDropdown",
   component: NetworkDropdown,
 };
 
