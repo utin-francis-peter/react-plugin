@@ -1,7 +1,7 @@
 import InputOutput from "../components/InputOutput";
 
 export default {
-  title: "Bungee/Components",
+  title: "Bungee/PriceInputOutput",
   component: InputOutput,
   args: {
     styles: {
