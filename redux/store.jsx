@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import networkSlice from "./networkSlice";
+import chainsSlice from "./features/chains/chains.slice";
 
 export const store = configureStore({
   reducer: {
-    networkSlice: networkSlice,
+    chains: chainsSlice,
   },
 });

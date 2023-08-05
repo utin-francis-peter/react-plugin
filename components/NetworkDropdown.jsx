@@ -1,50 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { chains } from "../data/data";
+import { useDispatch, useSelector } from "react-redux";
+import { getChains } from "../redux/features/chains/chains.slice";
 
 const NetworkDropdown = ({ variant }) => {
+  const dispatch = useDispatch();
+  const { loading, chainsList, error } = useSelector((state) => state.chains);
+
   const [activeChain, setActiveChain] = useState();
   const [showChains, setShowChains] = useState(false);
 
   const handleActiveNetwork = (id) => {
-    setActiveChain(() => chains.find((d) => d.chainId === id));
+    setActiveChain(() => chainsList.result?.find((d) => d.chainId === id));
   };
 
   useEffect(() => {
+    dispatch(getChains());
+  }, []);
+
+  // setting active network on initial page load
+  useEffect(() => {
     if (variant === "from") {
       setActiveChain(() =>
-        chains.find((d) => d.name.toLowerCase() === "ethereum")
+        chainsList.result?.find((d) => d.name.toLowerCase() === "ethereum")
       );
     } else if (variant === "to") {
       setActiveChain(() =>
-        chains.find((d) => d.name.toLowerCase() === "polygon")
+        chainsList.result?.find((d) => d.name.toLowerCase() === "polygon")
       );
     }
   }, []);
 
-  //TODO: WHY DIDN'T DOMContentLoaded EVENT FIRE????
-  //   useEffect(() => {
-  //     window.addEventListener("DOMContentLoaded", () => {
-  //       //   set active network to eth if variant is FROM, and polygon if variant is TO
-  //       console.log("TOP GUY");
-  //       switch (variant) {
-  //         case "from":
-  //           console.log("from block");
-  //           setActiveChain(() =>
-  //             chains.find((d) => d.name.toLowerCase() === "ethereum")
-  //           );
-  //           break;
-  //
-  //         default:
-  //           console.log("to block");
-  //           setActiveChain(() =>
-  //             chains.find((d) => d.name.toLowerCase() === "polygon")
-  //           );
-  //           break;
-  //       }
-  //     });
-  //   }, []);
   return (
-    <div className="w-1/5">
+    <div className="w-2/5">
       <button
         className="block flex w-full items-center justify-between  gap-3 border border-red-300 px-1"
         onClick={() => setShowChains(!showChains)}>
@@ -62,12 +49,12 @@ const NetworkDropdown = ({ variant }) => {
 
       {/* all networks dropdown */}
       {showChains && (
-        <section className="inline-block bg-gray-500 p-2">
-          {chains
-            .filter((d) => d.chainId !== activeChain.chainId)
+        <section className=" bg-gray-500 p-2">
+          {chainsList.result
+            ?.filter((d) => d.chainId !== activeChain.chainId)
             .map((d, i) => (
               <button
-                className="block flex w-full items-center gap-3 hover:bg-gray-100"
+                className="block flex w-full items-center gap-5 py-1 hover:bg-gray-100"
                 key={i}
                 onClick={() => {
                   setShowChains(!showChains);
