@@ -1,34 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getChains } from "../redux/features/chains/chains.slice";
 
-const NetworkDropdown = ({ variant }) => {
-  const dispatch = useDispatch();
-  const { loading, chainsList, error } = useSelector((state) => state.chains);
-
-  const [activeChain, setActiveChain] = useState();
+const NetworkDropdown = ({
+  variant,
+  chainsList,
+  handleActiveChain,
+  activeSourceChain,
+  activeDestinationChain,
+}) => {
   const [showChains, setShowChains] = useState(false);
-
-  const handleActiveNetwork = (id) => {
-    setActiveChain(() => chainsList.result?.find((d) => d.chainId === id));
-  };
-
-  useEffect(() => {
-    dispatch(getChains());
-  }, []);
-
-  // setting active network on initial page load
-  useEffect(() => {
-    if (variant === "from") {
-      setActiveChain(() =>
-        chainsList.result?.find((d) => d.name.toLowerCase() === "ethereum")
-      );
-    } else if (variant === "to") {
-      setActiveChain(() =>
-        chainsList.result?.find((d) => d.name.toLowerCase() === "polygon")
-      );
-    }
-  }, []);
 
   return (
     <div className="w-2/5">
@@ -38,11 +17,17 @@ const NetworkDropdown = ({ variant }) => {
         <span className="flex items-center justify-between gap-2">
           <img
             className="rounded-full"
-            src={activeChain?.icon}
-            alt={`${activeChain?.icon} logo`}
+            src={
+              variant === "source"
+                ? activeSourceChain?.icon
+                : activeDestinationChain?.icon
+            }
+            alt="logo"
             width={20}
           />
-          {activeChain?.name}
+          {variant === "source"
+            ? activeSourceChain?.name
+            : activeDestinationChain?.name}
         </span>
         <i className={`fa-solid fa-chevron-${!showChains ? "down" : "up"}`}></i>
       </button>
@@ -51,14 +36,18 @@ const NetworkDropdown = ({ variant }) => {
       {showChains && (
         <section className=" bg-gray-500 p-2">
           {chainsList.result
-            ?.filter((d) => d.chainId !== activeChain.chainId)
+            ?.filter(
+              (d) =>
+                d.chainId !== activeSourceChain?.chainId ||
+                d.chainId !== activeDestinationChain?.chainId
+            )
             .map((d, i) => (
               <button
                 className="block flex w-full items-center gap-5 py-1 hover:bg-gray-100"
                 key={i}
                 onClick={() => {
                   setShowChains(!showChains);
-                  handleActiveNetwork(d.chainId);
+                  handleActiveChain(variant, d.chainId);
                 }}>
                 <img
                   className="rounded-full"

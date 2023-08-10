@@ -3,8 +3,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
   loading: false,
-  chainsList: [],
   error: "",
+  chainsList: [],
+  activeSourceChain: {},
+  activeDestinationChain: {},
 };
 
 // defining the async action
@@ -21,6 +23,22 @@ export const getChains = createAsyncThunk("chains/getChains", async () => {
 const chainsSlice = createSlice({
   name: "chains",
   initialState,
+
+  // reducers for setting activeSourceChain and activeDestinationChain
+  reducers: {
+    setActiveSourceChain: (state, action) => {
+      state.activeSourceChain = state.chainsList.result?.find(
+        (chain) => chain.chainId === action.payload
+      );
+    },
+
+    setActiveDestinationChain: (state, action) => {
+      state.activeDestinationChain = state.chainsList.result?.find(
+        (chain) => chain.chainId === action.payload
+      );
+    },
+  },
+
   extraReducers: (builder) => {
     builder.addCase(getChains.pending, (state) => {
       state.loading = true;
@@ -40,3 +58,5 @@ const chainsSlice = createSlice({
 });
 
 export default chainsSlice.reducer;
+export const { setActiveSourceChain, setActiveDestinationChain } =
+  chainsSlice.actions;

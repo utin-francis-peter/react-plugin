@@ -31,7 +31,7 @@ const TokenModal = () => {
         <>
           {/* modal underlay */}
           <div
-            className="fixed left-0 top-0 w-full"
+            className="fixed left-0 top-0 w-full overflow-hidden"
             onClick={(e) => {
               e.stopPropagation();
               console.log("close modal!");
@@ -44,43 +44,51 @@ const TokenModal = () => {
 
           {/* modal inner */}
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-white"
             style={{ width: "50vw", height: "80vh" }}>
-            <header className=" flex items-center justify-between border-b-2 px-5">
-              <h5>Select Token</h5>
-              <button className="rounded-full">
-                <i className="fa-solid fa-close"></i>
-              </button>
-            </header>
+            <header className="my-3">
+              <section className="flex items-center justify-between border-b-2 p-2">
+                <h5>Select Token</h5>
+                <button onClick={() => setShowModal(false)} className="text-xl">
+                  <i className="fa-solid fa-close"></i>
+                </button>
+              </section>
 
-            <main>
-              <section className=" px-5">
+              <section className="my-1 px-5">
                 <form className="flex justify-center ">
                   <input
-                    className="w-4/5 border border-gray-400 px-2 py-3 focus:outline-0"
+                    className="mx-2 w-full border border-gray-400 px-2 py-3 focus:outline-0"
                     type="search"
                     placeholder="Search by name or paste address"
                   />
                 </form>
-                <div></div>
               </section>
+            </header>
 
-              <section className=" overflow-hidden">
-                {fromToken.map((t, i) => (
-                  <button
-                    key={i}
-                    className="flex w-full justify-between px-2 py-3">
-                    <div className="flex items-center gap-2">
-                      <img src={t.icon} alt={`${t.name} icon`} width={20} />
-                      <span>
-                        <h6>{t.name}</h6>
-                        <p>{t.symbol}</p>
-                      </span>
-                    </div>
-                    <div></div>
-                  </button>
-                ))}
-              </section>
+            <main className="h-full overflow-y-scroll">
+              {fromToken.map((t, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setActiveToken(t);
+                    setShowModal(false);
+                  }}
+                  className="block flex w-full items-center gap-5 p-3 hover:bg-gray-100">
+                  <div>
+                    <img src={t.icon} alt={`${t.name} icon`} width={30} />
+                  </div>
+                  <div>
+                    <h6>
+                      {t.name}
+
+                      {activeToken.name === t.name && (
+                        <i className="fa-solid fa-circle-check mx-2 text-green-800"></i>
+                      )}
+                    </h6>
+                    <p className="text-left text-xs">{t.symbol}</p>
+                  </div>
+                </button>
+              ))}
             </main>
           </div>
         </>
