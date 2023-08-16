@@ -7,7 +7,6 @@ export default {
     styles: {
       border: "border border-red-400",
       padding: "p-3",
-      width: "w-full",
     },
   },
 };

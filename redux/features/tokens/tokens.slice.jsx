@@ -27,24 +27,17 @@ export const getSourceTokens = createAsyncThunk(
 
 export const getDestinationTokens = createAsyncThunk(
   "tokens/getDestinationTokens",
-  async (activeSourceChainId, activeDestinationChainId) => {
-    if (activeSourceChainId && activeDestinationChainId) {
-      console.log(
-        "line executed",
-        activeSourceChainId,
-        activeDestinationChainId
-      );
-      const res = await fetch(
-        `https://api.socket.tech/v2/token-lists/to-token-list?fromChainId=${activeSourceChainId}&toChainId=${activeDestinationChainId}`,
-        {
-          headers: {
-            accept: "application/json",
-            "API-KEY": "645b2c8c-5825-4930-baf3-d9b997fcd88c",
-          },
-        }
-      );
-      return res.json();
-    }
+  async (chainsId) => {
+    const res = await fetch(
+      `https://api.socket.tech/v2/token-lists/to-token-list?fromChainId=${chainsId.sourceId}&toChainId=${chainsId.destinationId}`,
+      {
+        headers: {
+          accept: "application/json",
+          "API-KEY": "645b2c8c-5825-4930-baf3-d9b997fcd88c",
+        },
+      }
+    );
+    return res.json();
   }
 );
 
@@ -54,13 +47,13 @@ const TokensSlice = createSlice({
 
   reducers: {
     setActiveSourceToken: (state, action) => {
-      state.activeSourceToken = state.sourceTokens.find(
+      state.activeSourceToken = state.sourceTokens?.find(
         (token) => token.symbol.toLowerCase() === action.payload
       );
     },
 
     setActiveDestinationToken: (state, action) => {
-      state.activeDestinationToken = state.destinationTokens.find(
+      state.activeDestinationToken = state.destinationTokens?.find(
         (token) => token.symbol.toLowerCase() === action.payload
       );
     },

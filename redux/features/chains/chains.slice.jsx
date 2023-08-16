@@ -20,6 +20,7 @@ export const getChains = createAsyncThunk("chains/getChains", async () => {
   return response.json();
 });
 
+// TODO
 const chainsSlice = createSlice({
   name: "chains",
   initialState,

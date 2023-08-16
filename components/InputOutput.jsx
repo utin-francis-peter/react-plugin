@@ -1,18 +1,23 @@
 const InputOutput = ({ variant, value, handleAmount, styles }) => {
   return (
     <form>
-      {variant === "output" ? (
+      {variant === "destination" ? (
         <input
-          className={Object.values(styles).join(" ")}
+          className={
+            styles ? Object.values(styles).join(" ") : "w-1/4 bg-transparent"
+          }
           type="number"
           value={value}
+          placeholder="0.0"
           disabled
         />
       ) : (
         <input
-          className={Object.values(styles).join(" ")}
+          className={
+            styles ? Object.values(styles).join(" ") : "w-1/4 bg-transparent"
+          }
           type="number"
-          placeholder="Enter amount to swap/bridge"
+          placeholder="0.0"
           onChange={(e) => handleAmount(e.target.value)}
         />
       )}
