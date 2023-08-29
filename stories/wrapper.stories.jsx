@@ -1,4 +1,4 @@
-import Wrapper from "../components/Wrapper";
+import Wrapper from "../ui/Wrapper";
 
 export default {
   title: "Bungee/Wrapper",

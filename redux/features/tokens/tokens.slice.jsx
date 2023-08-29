@@ -13,7 +13,7 @@ export const getSourceTokens = createAsyncThunk(
   "tokens/getSourceTokens",
   async (activeSourceChainId) => {
     const res = await fetch(
-      `https://api.socket.tech/v2/token-lists/from-token-list?fromChainId=${activeSourceChainId}`,
+      `https://api.socket.tech/v2/token-lists/from-token-list?fromChainId=${activeSourceChainId}&isShortList=true`,
       {
         headers: {
           accept: "application/json",
@@ -29,7 +29,7 @@ export const getDestinationTokens = createAsyncThunk(
   "tokens/getDestinationTokens",
   async (chainsId) => {
     const res = await fetch(
-      `https://api.socket.tech/v2/token-lists/to-token-list?fromChainId=${chainsId.sourceId}&toChainId=${chainsId.destinationId}`,
+      `https://api.socket.tech/v2/token-lists/to-token-list?fromChainId=${chainsId.sourceId}&toChainId=${chainsId.destinationId}&isShortList=true`,
       {
         headers: {
           accept: "application/json",
@@ -89,6 +89,7 @@ const TokensSlice = createSlice({
     builder.addCase(getDestinationTokens.rejected, (state, action) => {
       state.loading = false;
       state.destinationTokens = [];
+      state.sourceTokens = [];
       state.error = action.error.message;
     });
   },

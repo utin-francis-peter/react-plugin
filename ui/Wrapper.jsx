@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import NetworkDropdown from "./NetworkDropdown";
-import TokenModal from "./token-modal";
+import NetworkDropdown from "../components/NetworkDropdown";
+import TokenModal from "../components/token-modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setActiveDestinationChain,
@@ -13,20 +13,32 @@ import {
   setActiveDestinationToken,
   setActiveSourceToken,
 } from "../redux/features/tokens/tokens.slice";
-import InputOutput from "./InputOutput";
+import InputOutput from "../components/InputOutput";
+import { fetchQuote } from "../redux/features/quote/quote.slice";
+import Route from "../components/route";
+import { ColorRing } from "react-loader-spinner";
 
 const Wrapper = () => {
-  // const [dispatchedDefSrcTkn, setDispatched] = useState(false);
+  const [sourceAmount, setSourceAmount] = useState("");
+  const [canAutoQuote, setCanAutoQuote] = useState(false);
 
   const dispatch = useDispatch();
+
   const { loading, chainsList, activeSourceChain, activeDestinationChain } =
     useSelector((state) => state.chains);
   const {
+    loading: isLoading,
     sourceTokens,
     destinationTokens,
     activeSourceToken,
     activeDestinationToken,
   } = useSelector((state) => state.tokens);
+
+  const {
+    loading: loadingQuote,
+    routes,
+    activeRoute,
+  } = useSelector((state) => state.quote);
 
   // chains section
   const setActiveChain = (variant, id) => {
@@ -34,6 +46,7 @@ const Wrapper = () => {
       case "source":
         dispatch(setActiveSourceChain(id));
         break;
+
       case "destination":
         dispatch(setActiveDestinationChain(id));
         break;
@@ -69,17 +82,13 @@ const Wrapper = () => {
   };
 
   const setActiveTokenParam = (tokenList, variant) => {
-    // take in either source or destination tokenlist and dispatch the symbol
-
-    // modify the function to set the active source token to USDC if supported, and active destination token to its native token if supported. ONLY IF activeSourceChain ID and activeDestinationChain ID are the same
-
     const usdcToken = tokenList.find(
       (token) => token.symbol.toLowerCase() === "usdc"
     );
-    const nativeToken = tokenList.find((token) =>
-      // TODO: make the check more efficient!!
-      // TODO: figure out a better property for making the native token check
-      token.address.startsWith("0xeeeeeeeeeeeeeeeeeeeeee")
+
+    const NATIVE_TOKEN_ADDRESS = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+    const nativeToken = tokenList.find(
+      (token) => token.address.toLowerCase() === NATIVE_TOKEN_ADDRESS
     );
     const firstToken = tokenList[0];
     console.log(firstToken);
@@ -91,16 +100,16 @@ const Wrapper = () => {
         case "source":
           dispatch(
             setActiveSourceToken(
-              usdcToken.symbol?.toLowerCase() ||
-                firstToken.symbol?.toLowerCase()
+              usdcToken?.symbol?.toLowerCase() ||
+                firstToken?.symbol?.toLowerCase()
             )
           );
           break;
         case "destination":
           dispatch(
             setActiveDestinationToken(
-              nativeToken.symbol?.toLowerCase() ||
-                firstToken.symbol?.toLowerCase()
+              nativeToken?.symbol?.toLowerCase() ||
+                firstToken?.symbol?.toLowerCase()
             )
           );
           break;
@@ -114,18 +123,18 @@ const Wrapper = () => {
         case "source":
           dispatch(
             setActiveSourceToken(
-              usdcToken.symbol?.toLowerCase() ||
-                nativeToken.symbol?.toLowerCase() ||
-                firstToken.symbol?.toLowerCase()
+              usdcToken?.symbol?.toLowerCase() ||
+                nativeToken?.symbol?.toLowerCase() ||
+                firstToken?.symbol?.toLowerCase()
             )
           );
           break;
         case "destination":
           dispatch(
             setActiveDestinationToken(
-              usdcToken.symbol?.toLowerCase() ||
-                nativeToken.symbol?.toLowerCase() ||
-                firstToken.symbol?.toLowerCase()
+              usdcToken?.symbol?.toLowerCase() ||
+                nativeToken?.symbol?.toLowerCase() ||
+                firstToken?.symbol?.toLowerCase()
             )
           );
           break;
@@ -139,7 +148,7 @@ const Wrapper = () => {
     if (activeSourceChain?.chainId) {
       dispatch(getSourceTokens(activeSourceChain.chainId));
     }
-  }, [activeSourceChain]);
+  }, [activeSourceChain, activeDestinationChain]);
 
   useEffect(() => {
     if (activeSourceChain?.chainId && activeDestinationChain?.chainId) {
@@ -150,49 +159,70 @@ const Wrapper = () => {
         })
       );
     }
-  }, [activeDestinationChain]);
+  }, [activeDestinationChain, activeSourceChain]);
 
   useEffect(() => {
     if (sourceTokens?.length) {
       setActiveTokenParam(sourceTokens, "source");
-      //       const symbol = setActiveTokenParam(
-      //         sourceTokens,
-      //         activeSourceChain,
-      //         activeDestinationChain
-      //       );
-      //       console.log("source symbol", symbol);
-      //
-      //       if (typeof symbol === "object") {
-      //         dispatch(setActiveSourceToken(symbol.activeSourceSymbol));
-      //       } else {
-      //         dispatch(setActiveSourceToken(symbol));
-      //       }
     }
   }, [activeSourceChain, sourceTokens]);
 
   useEffect(() => {
     if (destinationTokens?.length) {
       setActiveTokenParam(destinationTokens, "destination");
-
-      //       const symbol = setActiveTokenParam(
-      //         destinationTokens,
-      //         activeSourceChain,
-      //         activeDestinationChain
-      //       );
-      //       console.log("dest symbol", symbol);
-      //
-      //       if (typeof symbol === "object") {
-      //         dispatch(setActiveDestinationToken(symbol.activeDestinationSymbol));
-      //       } else {
-      //         dispatch(setActiveDestinationToken(symbol));
-      //       }
     }
   }, [activeDestinationChain, destinationTokens]);
 
+  // quote section
+  const handleSrcAmt = (e) => {
+    setSourceAmount(e.target.value);
+  };
+
+  useEffect(() => {
+    const goodPattern = /^0*[1-9][0-9]*$/;
+
+    if (goodPattern.test(sourceAmount)) {
+      console.log("fetching...");
+      dispatch(
+        fetchQuote({
+          sourceChainId: activeSourceChain?.chainId,
+          sourceTokenAddress: activeSourceToken?.address,
+          destinationChainId: activeDestinationChain?.chainId,
+          destinationTokenAddress: activeDestinationToken?.address,
+          sourceAmount,
+          userAddress: "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b",
+        })
+      );
+      setCanAutoQuote(true);
+    } else {
+      setCanAutoQuote(false);
+    }
+  }, [sourceAmount]);
+
+  // TODO: figure out why the Interval function is making the request with/without a valid sourceAMount
+  // useEffect(() => {
+  //   if (canAutoQuote) {
+  //     setInterval(() => {
+  //       console.log("can auto quote:", canAutoQuote);
+  //       console.log("source amount:", sourceAmount);
+  //       dispatch(
+  //         fetchQuote({
+  //           sourceChainId: activeSourceChain?.chainId,
+  //           sourceTokenAddress: activeSourceToken?.address,
+  //           destinationChainId: activeDestinationChain?.chainId,
+  //           destinationTokenAddress: activeDestinationToken?.address,
+  //           sourceAmount,
+  //           userAddress: "0x3e8cB4bd04d81498aB4b94a392c334F5328b237b",
+  //         })
+  //       );
+  //     }, 60000);
+  //   }
+  // }, [canAutoQuote]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center ">
-      <div className="w-1/3 border bg-gray-900 p-4">
-        <section className=" mb-5 bg-gray-600">
+    <div className="flex min-h-screen items-center justify-center text-white">
+      <div className="flex w-1/3 flex-col gap-4 border bg-gray-900 p-4">
+        <section className=" bg-gray-600">
           <section className="flex items-center justify-between border-b border-b-gray-50 p-2">
             <div>
               <NetworkDropdown
@@ -200,6 +230,7 @@ const Wrapper = () => {
                 chainsList={chainsList}
                 setActiveChain={setActiveChain}
                 activeSourceChain={activeSourceChain}
+                loading={loading}
               />
             </div>
             <div>Bal</div>
@@ -207,7 +238,11 @@ const Wrapper = () => {
 
           <section className="flex items-center justify-between p-2">
             <div>
-              <InputOutput variant={"source"} />
+              <InputOutput
+                variant={"source"}
+                sourceAmount={sourceAmount}
+                handleSrcAmt={handleSrcAmt}
+              />
             </div>
             <div>
               <TokenModal
@@ -215,6 +250,7 @@ const Wrapper = () => {
                 sourceTokens={sourceTokens}
                 activeSourceToken={activeSourceToken}
                 setActiveToken={setActiveToken}
+                isLoading={isLoading}
               />
             </div>
           </section>
@@ -228,6 +264,7 @@ const Wrapper = () => {
                 chainsList={chainsList}
                 setActiveChain={setActiveChain}
                 activeDestinationChain={activeDestinationChain}
+                loading={loading}
               />
             </div>
             <div>Bal</div>
@@ -239,14 +276,34 @@ const Wrapper = () => {
             </div>
             <div>
               <TokenModal
+                className="min-h-lg min-w-lg"
                 variant="destination"
                 destinationTokens={destinationTokens}
                 activeDestinationToken={activeDestinationToken}
                 setActiveToken={setActiveToken}
+                isLoading={isLoading}
               />
             </div>
           </section>
         </section>
+
+        {routes.length ? (
+          <section className="bg-gray-600 p-2">
+            <Route
+              loading={loadingQuote}
+              routes={routes}
+              activeRoute={activeRoute}
+              activeDestinationToken={activeDestinationToken}
+            />
+          </section>
+        ) : loadingQuote ? (
+          <div className="flex items-center">
+            <ColorRing width={50} height={50} />
+            <p>Finding the best bridge routes for you</p>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

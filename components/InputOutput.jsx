@@ -1,4 +1,4 @@
-const InputOutput = ({ variant, value, handleAmount, styles }) => {
+const InputOutput = ({ variant, sourceAmount, handleSrcAmt, styles }) => {
   return (
     <form>
       {variant === "destination" ? (
@@ -7,7 +7,6 @@ const InputOutput = ({ variant, value, handleAmount, styles }) => {
             styles ? Object.values(styles).join(" ") : "w-1/4 bg-transparent"
           }
           type="number"
-          value={value}
           placeholder="0.0"
           disabled
         />
@@ -18,7 +17,8 @@ const InputOutput = ({ variant, value, handleAmount, styles }) => {
           }
           type="number"
           placeholder="0.0"
-          onChange={(e) => handleAmount(e.target.value)}
+          value={sourceAmount}
+          onChange={(e) => handleSrcAmt(e)}
         />
       )}
     </form>

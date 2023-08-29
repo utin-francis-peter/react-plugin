@@ -7,6 +7,7 @@ const TokenModal = ({
   activeSourceToken,
   activeDestinationToken,
   setActiveToken,
+  isLoading,
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,26 +46,38 @@ const TokenModal = ({
 
   return (
     <div>
-      <button
-        className="block flex items-center justify-between  gap-3 px-1"
-        onClick={() => setShowModal(!showModal)}>
-        <span className="flex items-center justify-between gap-2">
-          <img
-            className="rounded-full"
-            src={
-              variant === "source"
-                ? activeSourceToken?.icon
-                : activeDestinationToken?.icon
-            }
-            alt={`logo`}
-            width={20}
-          />
-          {variant === "source"
-            ? activeSourceToken?.symbol
-            : activeDestinationToken?.symbol}
-        </span>
-        <i className={`fa-solid fa-chevron-down`}></i>
-      </button>
+      {isLoading ? (
+        <div
+          role="status"
+          className="flex max-w-sm animate-pulse items-center gap-1">
+          <div className=" h-5 w-5 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <div className=" h-5 w-24 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+          <span className="sr-only">Loading...</span>
+        </div>
+      ) : sourceTokens?.length === 0 || destinationTokens?.length === 0 ? (
+        <p>Unsupported</p>
+      ) : (
+        <button
+          className="block flex items-center justify-between  gap-3 px-1"
+          onClick={() => setShowModal(!showModal)}>
+          <span className="flex items-center justify-between gap-2">
+            <img
+              className="rounded-full"
+              src={
+                variant === "source"
+                  ? activeSourceToken?.logoURI
+                  : activeDestinationToken?.logoURI
+              }
+              alt={`logo`}
+              width={20}
+            />
+            {variant === "source"
+              ? activeSourceToken?.symbol
+              : activeDestinationToken?.symbol}
+          </span>
+          <i className={`fa-solid fa-chevron-down`}></i>
+        </button>
+      )}
 
       {showModal && (
         <>
@@ -83,7 +96,7 @@ const TokenModal = ({
 
           {/* modal inner */}
           <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-white"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-white text-black"
             style={{ width: "50vw", height: "80vh" }}>
             <header className="my-3">
               <section className="flex items-center justify-between border-b-2 p-2">
@@ -117,9 +130,13 @@ const TokenModal = ({
                         setActiveToken(variant, t.symbol.toLowerCase());
                         setShowModal(false);
                       }}
-                      className="block flex w-full items-center gap-5 p-3 hover:bg-gray-100">
+                      className="block flex w-full items-center gap-5 p-3 hover:bg-gray-300">
                       <div>
-                        <img src={t.icon} alt={`${t.name} icon`} width={30} />
+                        <img
+                          src={t.logoURI}
+                          alt={`${t.name} icon`}
+                          width={30}
+                        />
                       </div>
                       <div>
                         <h6>
@@ -140,9 +157,13 @@ const TokenModal = ({
                         setActiveToken(variant, t.symbol.toLowerCase());
                         setShowModal(false);
                       }}
-                      className="block flex w-full items-center gap-5 p-3 hover:bg-gray-100">
+                      className="block flex w-full items-center gap-5 p-3 hover:bg-gray-300">
                       <div>
-                        <img src={t.icon} alt={`${t.name} icon`} width={30} />
+                        <img
+                          src={t.logoURI}
+                          alt={`${t.name} icon`}
+                          width={30}
+                        />
                       </div>
                       <div>
                         <h6>
