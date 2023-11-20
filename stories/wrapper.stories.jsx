@@ -1,7 +1,7 @@
 import Wrapper from "../ui/Wrapper";
 
 export default {
-  title: "Bungee/Wrapper",
+  title: "UI/Wrapper",
   component: Wrapper,
 };
 

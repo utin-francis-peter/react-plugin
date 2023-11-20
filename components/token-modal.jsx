@@ -1,4 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+// import { useClickOutside } from "../helper-fxs/use-click-outside";
+import { useDispatch, useSelector } from "react-redux";
+import { setShowTokensModal } from "../redux/features/globals/globals.slice";
+import {
+  setActiveDestinationToken,
+  setActiveSourceToken,
+} from "../redux/features/tokens/tokens.slice";
 
 const TokenModal = ({
   variant,
@@ -9,12 +16,17 @@ const TokenModal = ({
   setActiveToken,
   isLoading,
 }) => {
-  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch();
+  const { showTokensModal } = useSelector((state) => state.globals);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSourceTokens, setFilteredSourceTokens] = useState([]);
   const [filteredDestinationTokens, setFilteredDestinationTokens] = useState(
     []
   );
+  //
+  //   const tokenModalRef = useRef();
+  //   useClickOutside(tokenModalRef, () => setShowModal(false));
 
   useEffect(() => {
     if (searchQuery.length) {
@@ -29,6 +41,21 @@ const TokenModal = ({
       setFilteredSourceTokens(sourceTokens);
     }
   }, [sourceTokens, searchQuery]);
+
+  //   useEffect(() => {
+  //     console.log("filtered src tokens: ", filteredSourceTokens);
+  //     console.log("============================================");
+  //
+  //     console.log("filtered dest tokens: ", filteredDestinationTokens);
+  //     console.log("============================================");
+  //
+  //     console.log("active dest token: ", activeDestinationToken);
+  //   }, [
+  //     filteredSourceTokens,
+  //     filteredDestinationTokens,
+  //     activeSourceToken,
+  //     activeDestinationToken,
+  //   ]);
 
   useEffect(() => {
     if (searchQuery.length) {
@@ -58,8 +85,8 @@ const TokenModal = ({
         <p>Unsupported</p>
       ) : (
         <button
-          className="block flex items-center justify-between  gap-3 px-1"
-          onClick={() => setShowModal(!showModal)}>
+          className="flex items-center justify-between  gap-3 px-1"
+          onClick={() => dispatch(setShowTokensModal())}>
           <span className="flex items-center justify-between gap-2">
             <img
               className="rounded-full"
@@ -79,29 +106,16 @@ const TokenModal = ({
         </button>
       )}
 
-      {showModal && (
-        <>
-          {/* modal underlay */}
-          <div
-            className="fixed left-0 top-0 w-full overflow-hidden"
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("close modal!");
-            }}
-            style={{
-              height: "100vh",
-              background: "linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7))",
-              backdropFilter: "blur(5px)",
-            }}></div>
-
-          {/* modal inner */}
-          <div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-white text-black"
-            style={{ width: "50vw", height: "80vh" }}>
+      {/* tokens modal */}
+      {showTokensModal && (
+        <div className="absolute left-0 top-0 h-full w-full overflow-y-scroll">
+          <div className=" overflow-hidden bg-white text-black">
             <header className="my-3">
               <section className="flex items-center justify-between border-b-2 p-2">
                 <h5>Select Token</h5>
-                <button onClick={() => setShowModal(false)} className="text-xl">
+                <button
+                  onClick={() => dispatch(setShowTokensModal())}
+                  className="text-xl">
                   <i className="fa-solid fa-close"></i>
                 </button>
               </section>
@@ -121,14 +135,19 @@ const TokenModal = ({
               </section>
             </header>
 
-            <main className="h-full overflow-y-scroll">
+            <main className="min-h-full overflow-y-scroll">
+              {/* TODO: figure out why destination variant is overriding source variant in both instances */}
+              {/* {variant === "source" && <p>Source Token Modal</p>}
+              {variant === "destination" && <p>Dest Token Modal</p>} */}
+              {/* {variant === "source" && console.log("source")
+                : console.log("destination")} */}
               {variant === "source"
                 ? filteredSourceTokens?.map((t, i) => (
                     <button
                       key={i}
                       onClick={() => {
-                        setActiveToken(variant, t.symbol.toLowerCase());
-                        setShowModal(false);
+                        dispatch(setActiveSourceToken(t.symbol.toLowerCase()));
+                        dispatch(setShowTokensModal());
                       }}
                       className="block flex w-full items-center gap-5 p-3 hover:bg-gray-300">
                       <div>
@@ -154,8 +173,10 @@ const TokenModal = ({
                     <button
                       key={i}
                       onClick={() => {
-                        setActiveToken(variant, t.symbol.toLowerCase());
-                        setShowModal(false);
+                        dispatch(
+                          setActiveDestinationToken(t.symbol.toLowerCase())
+                        );
+                        dispatch(setShowTokensModal());
                       }}
                       className="block flex w-full items-center gap-5 p-3 hover:bg-gray-300">
                       <div>
@@ -177,9 +198,10 @@ const TokenModal = ({
                       </div>
                     </button>
                   ))}
+              {/* {console.log(variant)} */}
             </main>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
