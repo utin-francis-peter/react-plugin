@@ -1,7 +1,7 @@
 import TokenModal from "../components/token-modal";
 
 export default {
-  title: "Bungee/TokenModal",
+  title: "Stories/TokenModal",
   component: TokenModal,
 };
 

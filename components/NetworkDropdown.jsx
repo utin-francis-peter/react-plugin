@@ -13,7 +13,7 @@ const NetworkDropdown = ({
   const [show, setShow] = useState(false);
 
   const networkRef = useRef();
-  // useClickOutside(networkRef, () => setShow(false));
+  useClickOutside(networkRef, () => setShow(false));
 
   if (chainsList.result?.length) {
     chainList =
@@ -34,7 +34,7 @@ const NetworkDropdown = ({
   // }, [show]);
 
   return (
-    <div className="flex gap-1 ">
+    <div ref={networkRef} className="flex gap-1 ">
       <span>{variant === "source" ? "From" : "To"}</span>
       {loading ? (
         <div
@@ -70,8 +70,8 @@ const NetworkDropdown = ({
 
       {/* all networks dropdown */}
       {show && (
-        <div ref={networkRef}>
-          <section className="absolute  bg-gray-500 p-2">
+        <div>
+          <section className="absolute max-h-40 overflow-y-scroll  border border-green-500 bg-gray-500 p-2">
             {chainList
               ?.filter(
                 (d) =>

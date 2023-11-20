@@ -12,7 +12,7 @@ export const fetchQuote = createAsyncThunk(
   "quote/fetchQuote",
   async (payload) => {
     const response = await fetch(
-      `https://api.socket.tech/v2/quote?fromChainId=${payload.sourceChainId}&fromTokenAddress=${payload.sourceTokenAddress}&toChainId=${payload.destinationChainId}&toTokenAddress=${payload.destinationTokenAddress}&fromAmount=${payload.sourceAmount}&userAddress=${payload.userAddress}&uniqueRoutesPerBridge=true&sort=output&singleTxOnly=true&isContractCall=false&bridgeWithGas=false&bridgeWithInsurance=true&defaultSwapSlippage=1`,
+      `https://api.socket.tech/v2/quote?fromChainId=${payload.sourceChainId}&fromTokenAddress=${payload.sourceTokenAddress}&toChainId=${payload.destinationChainId}&toTokenAddress=${payload.destinationTokenAddress}&fromAmount=${payload.sourceAmount}&userAddress=${payload.userAddress}&uniqueRoutesPerBridge=false&sort=output&singleTxOnly=true&isContractCall=false&bridgeWithGas=false&bridgeWithInsurance=true&defaultSwapSlippage=1`,
       {
         headers: {
           accept: "application/json",
@@ -46,6 +46,7 @@ const quoteSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchQuote.pending, (state) => {
       state.loading = true;
+      state.routes = [];
     });
 
     builder.addCase(fetchQuote.fulfilled, (state, action) => {

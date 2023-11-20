@@ -4,6 +4,7 @@ export const useClickOutside = (ref, callback) => {
   useEffect(() => {
     const handler = (e) => {
       if (ref.current && !ref.current.contains(e.target)) {
+        console.log("useClickOutside invoked");
         callback();
       }
     };
@@ -11,5 +12,5 @@ export const useClickOutside = (ref, callback) => {
     document.addEventListener("click", handler);
 
     return () => document.removeEventListener("click", handler);
-  });
+  }, []);
 };
